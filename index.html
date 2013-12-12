@@ -59,6 +59,19 @@
 				</section>
 
 				<section>
+					<h1>What is Testing?</h1>
+				</section>
+
+				<section>
+					<h1>Unit vs. Integration</h1>
+				</section>
+
+				<section>
+					<p>Popular Unit Testing Gems</p>
+					<img src="./images/rspec-popularity.png" />
+				</section>
+
+				<section>
 					<h2>The Six Steps</h2>
 					<ol>
 						<li>Use RSpec to write Unit Tests</li>
@@ -80,6 +93,314 @@
 						<li> ? </li>
 						<li> ? </li>
 					</ol>
+				</section>
+
+				<section>
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "User Creation" do
+
+    it "allows an email address with a + in the first section" do
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "User Creation" do
+
+    it "allows an email address with a + in the first section" do
+      # ARRANGE
+      # ACT
+      # ASSERT
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "User Creation" do
+
+    it "allows an email address with a + in the first section" do
+      test_user = User.new(email: "something+something@gmail.com")
+      # ACT
+      # ASSERT
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "User Creation" do
+
+    it "allows an email address with a + in the first section" do
+      test_user = User.new(email: "something+something@gmail.com")
+      test_user.save!
+      # ASSERT
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "User Creation" do
+
+    it "allows an email address with a + in the first section" do
+      test_user = User.new(email: "something+something@gmail.com")
+      test_user.save!
+      test_user.should have(0).errors_on(:email)
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "User Creation" do
+
+    it "allows an email address with a + in the first section" do
+      test_user = User.new(email: "something+something@gmail.com")
+      test_user.save!
+      test_user.should have(0).errors_on(:email)
+    end
+
+    it "does not allow an email address without a . in between sections" do
+    	# ARRANGE
+    	# ACT
+    	# ASSERT
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "User Creation" do
+
+    it "allows an email address with a + in the first section" do
+      test_user = User.new(email: "something+something@gmail.com")
+      test_user.save!
+      test_user.should have(0).errors_on(:email)
+    end
+
+    it "does not allow an email address without a . in between sections" do
+    	test_user = User.new(email: "namegmail.com")
+    	# ACT
+    	# ASSERT
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "User Creation" do
+
+    it "allows an email address with a + in the first section" do
+      test_user = User.new(email: "something+something@gmail.com")
+      test_user.save!
+      test_user.should have(0).errors_on(:email)
+    end
+
+    it "does not allow an email address without a . in between sections" do
+    	test_user = User.new(email: "namegmail.com")
+    	test_user.save!
+    	# ASSERT
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "User Creation" do
+
+    it "allows an email address with a + in the first section" do
+      test_user = User.new(email: "something+something@gmail.com")
+      test_user.save!
+      test_user.should have(0).errors_on(:email)
+    end
+
+    it "does not allow an email address without a . in between sections" do
+    	test_user = User.new(email: "namegmail.com")
+    	test_user.save!
+    	test_user.should have(1).error_on(:email)
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+				</section>
+
+				<section>
+
+					<section>
+						<p>app/models/user.rb</p>
+						<pre><code data-trim contenteditable>
+class User < ActiveRecord::Base
+
+  attr_accessible :email, :firstname, :lastname
+
+  validates :email, presence: true, with: /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}/
+
+  def display_name
+    "#{firstname} #{lastname}"
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "decorators" do
+
+    describe "#display_name" do
+
+      it "displays the firstname and lastname of a user separated by a space" do
+        # ARRANGE
+        # ACT
+        # ASSERT
+      end
+
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "decorators" do
+
+    describe "#display_name" do
+
+      it "displays the firstname and lastname of a user separated by a space" do
+        test_user = User.create!(firstname: "John", lastname: "Wall")
+        # ACT
+        # ASSERT
+      end
+
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "decorators" do
+
+    describe "#display_name" do
+
+      it "displays the firstname and lastname of a user separated by a space" do
+        test_user = User.create!(firstname: "John", lastname: "Wall")
+        display_name = test_user.display_name
+        # ASSERT
+      end
+
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "decorators" do
+
+    describe "#display_name" do
+
+      it "displays the firstname and lastname of a user separated by a space" do
+        test_user = User.create!(firstname: "John", lastname: "Wall")
+        display_name = test_user.display_name
+        display_name.should eq "John Wall"
+      end
+
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
 				</section>
 
 				<section>
@@ -92,6 +413,54 @@
 						<li> ? </li>
 						<li> ? </li>
 					</ol>
+				</section>
+
+				<section>
+					<p>Popular Factory Gems</p>
+					<img src="./images/factory-popularity.png" />
+				</section>
+
+				<section>
+					<section>
+						<p>spec/factories/user_factory.rb</p>
+						<pre><code data-trim contenteditable>
+FactoryGirl.define do
+
+  factory :user do
+
+    email "JohnWall@gmail.com"
+    firstname "John"
+    lastname "Wall"
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "decorators" do
+
+    describe "#display_name" do
+
+      it "displays the firstname and lastname of a user separated by a space" do
+        test_user = FactoryGirl.create(:user)
+        display_name = test_user.display_name
+        display_name.should eq "John Wall"
+      end
+
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
 				</section>
 
 				<section>
@@ -104,6 +473,11 @@
 						<li> ? </li>
 						<li> ? </li>
 					</ol>
+				</section>
+
+				<section>
+					<h2>Don't lose track of reality</h2>
+					<img src="./images/inception.jpg" />
 				</section>
 
 				<section>
