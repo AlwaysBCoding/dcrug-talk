@@ -535,6 +535,7 @@ end
 				<section>
 
 					<section>
+						<p>app/models/user.rb</o>
 						<pre><code data-trim contenteditable>
 class User < ActiveRecord::Base
 
@@ -559,6 +560,7 @@ class User < ActiveRecord::Base
 end
 						</code></pre>
 					</section>
+
 
 					<section>
 						<p>spec/models/user_spec.rb</p>
@@ -595,7 +597,87 @@ end
 				</section>
 
 				<section>
-					<h1>Stubs are like viruses</h1>
+
+					<section>
+						<h1>Stubs are like viruses</h1>
+					</section>
+
+					<section>
+						<p>app/models/user.rb</o>
+						<pre><code data-trim contenteditable>
+class User < ActiveRecord::Base
+
+  attr_accessible :email, :firstname, :lastname, :stripe_customer_id
+
+  validates :email, with: /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,10}/
+
+  def display_name
+    "#{firstname} #{lastname}"
+  end
+
+  def create_stripe_customer(card_token)
+    stripe_api_response = create_stripe_customer_api_call(card_token)
+    self.stripe_customer_id = stripe_api_response.id
+    self.save!
+  end
+
+  def create_stripe_customer_api_call(card_token)
+    Stripe::Customer.create(card: card_token, description: self.email)
+  end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/factories/user_factory.rb</p>
+						<pre><code data-trim contenteditable>
+FactoryGirl.define do
+
+	factory :user do
+
+		email "JohnWall@gmail.com"
+		firstname "John"
+		lastname "Wall"
+
+		after(:build) do |user|
+		  user.stub(:create_stripe_customer_api_call).and_return(OpenStruct.new(id: "customer_1234"))
+		end
+
+	end
+
+end
+						</code></pre>
+					</section>
+
+					<section>
+						<p>spec/models/user_spec.rb</p>
+						<pre><code data-trim contenteditable>
+describe User do
+
+  context "payments" do
+
+    describe "#create_stripe_customer" do
+
+      it "displays the firstname and lastname of a user separated by a space" do
+        test_user = FactoryGirl.create(:user)
+        test_user.create_stripe_customer("xyz")
+        test_user.stripe_customer_id = "customer_1234"
+      end
+
+    end
+
+  end
+
+end
+						</code></pre>
+					</section>
+
+				</section>
+
+				<section>
+					<h2>Don't lose track of reality</h2>
+					<img src="./images/inception.jpg" />
 				</section>
 
 				<section>
@@ -611,8 +693,7 @@ end
 				</section>
 
 				<section>
-					<h2>Don't lose track of reality</h2>
-					<img src="./images/inception.jpg" />
+
 				</section>
 
 				<section>
